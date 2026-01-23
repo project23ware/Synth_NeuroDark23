@@ -103,6 +103,14 @@ class UIController {
                 if (targetPanel) targetPanel.classList.add('active');
             };
         });
+
+        // NEW: Sidebar Action Buttons
+        this.safeClick('btn-nav-export', () => this.toggleExportModal());
+        this.safeClick('btn-nav-terminal', () => {
+            const p = document.getElementById('sys-log-panel');
+            if (p) { p.classList.toggle('visible'); document.getElementById('btn-toggle-log-internal').innerText = p.classList.contains('visible') ? "[ HIDE ]" : "[ SHOW ]"; }
+        });
+        this.safeClick('btn-nav-reset', () => location.reload());
     }
 
     bindGlobalEvents() {
@@ -151,7 +159,6 @@ class UIController {
         }
 
         // Modals
-        this.safeClick('btn-open-export', () => { this.toggleMenu(); this.toggleExportModal(); });
         this.safeClick('btn-close-export', () => this.toggleExportModal());
 
         // CSV Actions
@@ -311,10 +318,6 @@ class UIController {
         });
 
         // Track Controls
-        this.safeClick('btn-menu-panic', () => location.reload());
-        this.safeClick('btn-menu-clear', () => {
-            if (confirm("Clear Pattern?")) { window.timeMatrix.clearBlock(window.AppState.editingBlock); this.updateEditors(); this.toggleMenu(); }
-        });
         this.safeClick('btn-add-block', () => { window.timeMatrix.addBlock(); this.goToBlock(window.timeMatrix.blocks.length - 1); });
         this.safeClick('btn-del-block', () => { if (confirm("Delete Block?")) { window.timeMatrix.removeBlock(window.AppState.editingBlock); this.fullRefresh(); } });
         this.safeClick('btn-mem-copy', () => window.timeMatrix.copyToClipboard(window.AppState.editingBlock));
@@ -343,10 +346,6 @@ class UIController {
                 logPanel.classList.toggle('visible');
                 document.getElementById('btn-toggle-log-internal').innerText = logPanel.classList.contains('visible') ? "[ HIDE ]" : "[ SHOW ]";
             }
-        });
-        this.safeClick('btn-toggle-log-menu', () => {
-            if (!logPanel.classList.contains('visible')) document.getElementById('btn-toggle-log-internal').click();
-            this.toggleMenu();
         });
 
         // Add Synth

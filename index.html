@@ -85,7 +85,12 @@
                 <button class="fs-nav-btn" data-target="panel-matrix">MATRIX</button>
                 <button class="fs-nav-btn" data-target="panel-synths">SYNTHS</button>
                 <button class="fs-nav-btn" data-target="panel-drums">DRUMS</button>
-                <button class="fs-nav-btn" data-target="panel-system">SYSTEM</button>
+
+                <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                    <button id="btn-nav-export" class="fs-nav-btn">EXPORT AUDIO</button>
+                    <button id="btn-nav-terminal" class="fs-nav-btn">TERMINAL</button>
+                    <button id="btn-nav-reset" class="fs-nav-btn text-red-dim">SYSTEM RESET</button>
+                </div>
             </nav>
 
             <div class="fs-footer">
@@ -101,37 +106,43 @@
                 <h2 class="fs-header">VIRTUAL MEMORY CONTROL</h2>
                 <div class="fs-card full-width">
                     <h3 class="card-label">DATA STREAM</h3>
-                    <textarea id="csv-io-area" class="input-area custom-scroll" spellcheck="false" style="height: 300px; font-family: monospace; font-size: 14px; background: rgba(0,0,0,0.5);"></textarea>
-                    
+                    <textarea id="csv-io-area" class="input-area custom-scroll" spellcheck="false"
+                        style="height: 300px; font-family: monospace; font-size: 14px; background: rgba(0,0,0,0.5);"></textarea>
+
                     <div class="fs-grid-2" style="margin-top:20px;">
-                         <div>
+                        <div>
                             <h3 class="card-label">DATA OPERATIONS</h3>
                             <div class="grid-2">
-                                <button id="btn-gen-csv" class="btn-fs-action dashed border-purple text-purple">GENERATE CSV</button>
-                                <button id="btn-load-csv" class="btn-fs-action dashed border-green text-green">LOAD FROM TEXT</button>
+                                <button id="btn-gen-csv" class="btn-fs-action dashed border-purple text-purple">GENERATE
+                                    CSV</button>
+                                <button id="btn-load-csv" class="btn-fs-action dashed border-green text-green">LOAD FROM
+                                    TEXT</button>
                             </div>
-                         </div>
-                         <div>
+                        </div>
+                        <div>
                             <h3 class="card-label">FILE I/O</h3>
                             <div class="grid-2">
                                 <button id="btn-download-csv" class="btn-fs-action">DOWNLOAD FILE</button>
-                                <label class="btn-fs-action" style="cursor:pointer; display:block; text-align:center; display:flex; align-items:center; justify-content:center;">
+                                <label class="btn-fs-action"
+                                    style="cursor:pointer; display:block; text-align:center; display:flex; align-items:center; justify-content:center;">
                                     UPLOAD FILE
                                     <input type="file" id="file-upload-csv" accept=".csv" hidden>
                                 </label>
                             </div>
-                         </div>
+                        </div>
                     </div>
 
                     <div style="margin-top:30px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
-                         <h3 class="card-label">CONNECTIVITY</h3>
-                         <div class="grid-2" style="max-width: 50%;">
-                            <button id="btn-export-midi" class="btn-fs-action text-cyan border-cyan">EXPORT MIDI</button>
-                            <label class="btn-fs-action text-cyan border-cyan" style="cursor:pointer; display:block; text-align:center; display:flex; align-items:center; justify-content:center;">
+                        <h3 class="card-label">CONNECTIVITY</h3>
+                        <div class="grid-2" style="max-width: 50%;">
+                            <button id="btn-export-midi" class="btn-fs-action text-cyan border-cyan">EXPORT
+                                MIDI</button>
+                            <label class="btn-fs-action text-cyan border-cyan"
+                                style="cursor:pointer; display:block; text-align:center; display:flex; align-items:center; justify-content:center;">
                                 IMPORT MIDI
                                 <input type="file" id="file-upload-midi" accept=".mid,.midi" hidden>
                             </label>
-                         </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -204,28 +215,6 @@
                 </div>
             </div>
 
-            <!-- PANEL 5: SYSTEM -->
-            <div id="panel-system" class="fs-panel">
-                <h2 class="fs-header">SYSTEM & TOOLS</h2>
-                <div class="fs-grid-3">
-                    <button id="btn-open-export" class="fs-tile text-green">
-                        <span class="tile-icon">💿</span>
-                        <span class="tile-lbl">EXPORT AUDIO</span>
-                    </button>
-                    <button id="btn-toggle-log-menu" class="fs-tile">
-                        <span class="tile-icon">terminal</span>
-                        <span class="tile-lbl">SYSTEM LOGS</span>
-                    </button>
-                    <button id="btn-menu-clear" class="fs-tile text-red-dim">
-                        <span class="tile-icon">X</span>
-                        <span class="tile-lbl">CLEAR PATTERN</span>
-                    </button>
-                    <button id="btn-menu-panic" class="fs-tile bg-red-dim text-white">
-                        <span class="tile-icon">!</span>
-                        <span class="tile-lbl">SYSTEM RESET</span>
-                    </button>
-                </div>
-            </div>
 
         </div>
     </div>
