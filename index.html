@@ -47,25 +47,7 @@
         </div>
     </div>
 
-    <!-- EXPORT MODAL -->
-    <div id="export-modal" class="modal-overlay hidden">
-        <div class="modal-window border-green">
-            <h2 class="modal-header text-green">RENDER AUDIO</h2>
-            <div class="modal-content">
-                <label class="label-tech text-green">LOOP COUNT:</label>
-                <div class="grid-4">
-                    <button class="btn-option active" data-rep="1">1x</button>
-                    <button class="btn-option" data-rep="2">2x</button>
-                    <button class="btn-option" data-rep="4">4x</button>
-                    <button class="btn-option" data-rep="8">8x</button>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="btn-start-render" class="btn-primary btn-green-solid">RENDER WAV</button>
-                <button id="btn-close-export" class="btn-text">CANCEL</button>
-            </div>
-        </div>
-    </div>
+    <!-- EXPORT MODAL REMOVED -->
 
     <!-- MEMORY MODAL REMOVED -->
 
@@ -85,9 +67,9 @@
                 <button class="fs-nav-btn" data-target="panel-matrix">MATRIX</button>
                 <button class="fs-nav-btn" data-target="panel-synths">SYNTHS</button>
                 <button class="fs-nav-btn" data-target="panel-drums">DRUMS</button>
+                <button class="fs-nav-btn" data-target="panel-export" id="btn-nav-export">EXPORT AUDIO</button>
 
                 <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
-                    <button id="btn-nav-export" class="fs-nav-btn">EXPORT AUDIO</button>
                     <button id="btn-nav-terminal" class="fs-nav-btn">TERMINAL</button>
                     <button id="btn-nav-reset" class="fs-nav-btn text-red-dim">SYSTEM RESET</button>
                 </div>
@@ -212,6 +194,34 @@
                     <!-- Note: The ID 'drum-config-container' is populated by JS with collapsible header.
                          We will need to keep an eye on how JS renders this, but container is here. -->
                     <div id="drum-config-container" class="drum-config-fs"></div>
+                </div>
+            </div>
+
+            <!-- PANEL 5: EXPORT (NEW) -->
+            <div id="panel-export" class="fs-panel">
+                <h2 class="fs-header">AUDIO EXPORT</h2>
+                <div class="fs-card full-width">
+                    <h3 class="card-label">RENDER CONFIGURATION</h3>
+                    <p class="card-desc">Render the current pattern to a high-quality WAV file. Select how many times
+                        the pattern should loop in the final file.</p>
+
+                    <div class="config-row-fs">
+                        <div class="fs-info">
+                            <span class="fs-lbl text-green">LOOP COUNT</span>
+                            <span class="fs-sub">Pattern repetitions</span>
+                        </div>
+                        <div class="grid-4" style="flex:1; max-width:300px;">
+                            <button class="btn-option active" data-rep="1">1x</button>
+                            <button class="btn-option" data-rep="2">2x</button>
+                            <button class="btn-option" data-rep="4">4x</button>
+                            <button class="btn-option" data-rep="8">8x</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                        <button id="btn-start-render" class="btn-fs-action border-green text-green"
+                            style="font-size: 16px; padding: 20px;">RENDER WAV FILE</button>
+                    </div>
                 </div>
             </div>
 

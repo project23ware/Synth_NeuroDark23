@@ -105,7 +105,7 @@ class UIController {
         });
 
         // NEW: Sidebar Action Buttons
-        this.safeClick('btn-nav-export', () => this.toggleExportModal());
+        // Export is now a main tab handled by bindMenuNavigation
         this.safeClick('btn-nav-terminal', () => {
             const p = document.getElementById('sys-log-panel');
             if (p) { p.classList.toggle('visible'); document.getElementById('btn-toggle-log-internal').innerText = p.classList.contains('visible') ? "[ HIDE ]" : "[ SHOW ]"; }
@@ -159,7 +159,6 @@ class UIController {
         }
 
         // Modals
-        this.safeClick('btn-close-export', () => this.toggleExportModal());
 
         // CSV Actions
         this.safeClick('btn-gen-csv', () => {
@@ -330,7 +329,7 @@ class UIController {
 
         // Export Reps
         // Export Reps
-        const exportBtns = document.querySelectorAll('#export-modal .btn-option');
+        const exportBtns = document.querySelectorAll('#panel-export .btn-option');
         exportBtns.forEach(btn => {
             btn.onclick = () => {
                 exportBtns.forEach(b => b.classList.remove('active'));
@@ -467,7 +466,7 @@ class UIController {
     }
 
     toggleMenu() { document.getElementById('main-menu').classList.toggle('hidden'); }
-    toggleExportModal() { document.getElementById('export-modal').classList.toggle('hidden'); }
+    toggleExportModal() { /* Deprecated */ }
 
     // --- RENDERERS ---
     renderLoop() {
