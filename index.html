@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NeuroDark23 | v39 Final UI</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        window.logToScreen = function (msg, type = 'info') {
+            const consoleEl = document.getElementById('sys-log-content');
+            if (consoleEl) {
+                const line = document.createElement('div');
+                line.className = type === 'error' ? 'log-err' : (type === 'warn' ? 'log-warn' : 'log-info');
+                const time = new Date().toLocaleTimeString().split(' ')[0];
+                line.innerText = `[${time}] ${msg}`;
+                consoleEl.appendChild(line);
+                consoleEl.scrollTop = consoleEl.scrollHeight;
+            }
+            console.log(`[ND23] ${msg}`);
+        };
+
+        window.onerror = function (msg, url, line) {
+            window.logToScreen(`CRITICAL: ${msg} (L${line})`, 'error');
+            const p = document.getElementById('sys-log-panel');
+            if (p) p.classList.add('visible');
+            return false;
+        };
+    </script>
+</head>
+
+<body>
+
+    <!-- LOG TERMINAL -->
+    <div id="sys-log-panel" class="log-terminal">
+        <div class="terminal-header">
+            <span class="terminal-title">:: SYSTEM_DEBUG ::</span>
+            <div class="terminal-controls">
+                <button onclick="document.getElementById('sys-log-content').innerHTML=''"
+                    class="btn-term">CLEAR</button>
+                <button id="btn-toggle-log-internal" class="btn-term">[ HIDE ]</button>
+            </div>
+        </div>
+        <div id="sys-log-content" class="terminal-body custom-scroll">
+            <div class="log-init">System Ready. Initializing Audio Engine v39...</div>
+        </div>
+    </div>
+
+    <!-- EXPORT MODAL -->
+    <div id="export-modal" class="modal-overlay hidden">
+        <div class="modal-window border-green">
+            <h2 class="modal-header text-green">RENDER AUDIO</h2>
+            <div class="modal-content">
+                <label class="label-tech text-green">LOOP COUNT:</label>
+                <div class="grid-4">
+                    <button class="btn-option active" data-rep="1">1x</button>
+                    <button class="btn-option" data-rep="2">2x</button>
+                    <button class="btn-option" data-rep="4">4x</button>
+                    <button class="btn-option" data-rep="8">8x</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-start-render" class="btn-primary btn-green-solid">RENDER WAV</button>
+                <button id="btn-close-export" class="btn-text">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEMORY MODAL REMOVED -->
+
+    <!-- MAIN CONFIG MENU (FULL SCREEN REDESIGN) -->
+    <div id="main-menu" class="fullscreen-menu hidden">
+
+        <!-- SIDEBAR NAV -->
+        <div class="fs-sidebar">
+            <div class="fs-brand">
+                <span class="fs-title">NEURODARK</span>
+                <span class="fs-ver">v42</span>
+            </div>
+
+            <nav class="fs-nav">
+                <button class="fs-nav-btn active" data-target="panel-global">GLOBAL</button>
+                <button class="fs-nav-btn" data-target="panel-memory">MEMORY</button>
+                <button class="fs-nav-btn" data-target="panel-matrix">MATRIX</button>
+                <button class="fs-nav-btn" data-target="panel-synths">SYNTHS</button>
+                <button class="fs-nav-btn" data-target="panel-drums">DRUMS</button>
+                <button class="fs-nav-btn" data-target="panel-system">SYSTEM</button>
+            </nav>
+
+            <div class="fs-footer">
+                <button id="btn-menu-close" class="btn-fs-close">RESUME SESSION</button>
+            </div>
+        </div>
+
+        <!-- CONTENT AREA -->
+        <div class="fs-content">
+
+            <!-- PANEL: MEMORY (NEW) -->
+            <div id="panel-memory" class="fs-panel">
+                <h2 class="fs-header">VIRTUAL MEMORY CONTROL</h2>
+                <div class="fs-card full-width">
+                    <h3 class="card-label">DATA STREAM</h3>
+                    <textarea id="csv-io-area" class="input-area custom-scroll" spellcheck="false" style="height: 300px; font-family: monospace; font-size: 14px; background: rgba(0,0,0,0.5);"></textarea>
+                    
+                    <div class="fs-grid-2" style="margin-top:20px;">
+                         <div>
+                            <h3 class="card-label">DATA OPERATIONS</h3>
+                            <div class="grid-2">
+                                <button id="btn-gen-csv" class="btn-fs-action dashed border-purple text-purple">GENERATE CSV</button>
+                                <button id="btn-load-csv" class="btn-fs-action dashed border-green text-green">LOAD FROM TEXT</button>
+                            </div>
+                         </div>
+                         <div>
+                            <h3 class="card-label">FILE I/O</h3>
+                            <div class="grid-2">
+                                <button id="btn-download-csv" class="btn-fs-action">DOWNLOAD FILE</button>
+                                <label class="btn-fs-action" style="cursor:pointer; display:block; text-align:center; display:flex; align-items:center; justify-content:center;">
+                                    UPLOAD FILE
+                                    <input type="file" id="file-upload-csv" accept=".csv" hidden>
+                                </label>
+                            </div>
+                         </div>
+                    </div>
+
+                    <div style="margin-top:30px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+                         <h3 class="card-label">CONNECTIVITY</h3>
+                         <div class="grid-2" style="max-width: 50%;">
+                            <button id="btn-export-midi" class="btn-fs-action text-cyan border-cyan">EXPORT MIDI</button>
+                            <label class="btn-fs-action text-cyan border-cyan" style="cursor:pointer; display:block; text-align:center; display:flex; align-items:center; justify-content:center;">
+                                IMPORT MIDI
+                                <input type="file" id="file-upload-midi" accept=".mid,.midi" hidden>
+                            </label>
+                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 1: GLOBAL -->
+            <div id="panel-global" class="fs-panel active">
+                <h2 class="fs-header">GLOBAL SETTINGS</h2>
+                <div class="fs-grid-2">
+                    <div class="fs-card">
+                        <h3 class="card-label">INTERFACE MODE</h3>
+                        <p class="card-desc">Select prefered interaction style.</p>
+                        <button id="btn-toggle-ui-mode" class="btn-fs-action">UI MODE: ANALOG</button>
+                        <button id="btn-toggle-device-mode" class="btn-fs-toggle">DEVICE: SMARTPHONE</button>
+                    </div>
+                    <div class="fs-card">
+                        <h3 class="card-label">VISUALS</h3>
+                        <p class="card-desc">Performance impact settings.</p>
+                        <button id="btn-toggle-visualizer" class="btn-fs-toggle">VISUALIZER: OFF</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 2: MATRIX -->
+            <div id="panel-matrix" class="fs-panel">
+                <h2 class="fs-header">MATRIX CONFIGURATION</h2>
+                <div class="fs-card full-width">
+                    <h3 class="card-label">GRID DIMENSIONS</h3>
+
+                    <div class="config-row-fs">
+                        <div class="fs-info">
+                            <span class="fs-lbl">COLUMN COUNT</span>
+                            <span class="fs-sub">Visible steps per row</span>
+                        </div>
+                        <div class="fs-ctrl-group">
+                            <span id="grid-col-display" class="fs-val-display">4</span>
+                            <input type="range" id="grid-col-slider" min="4" max="16" step="1" value="4"
+                                class="fs-slider">
+                        </div>
+                    </div>
+
+                    <div class="config-row-fs">
+                        <div class="fs-info">
+                            <span class="fs-lbl">STEP SIZE</span>
+                            <span class="fs-sub">Pixel size of grid cells</span>
+                        </div>
+                        <div class="fs-ctrl-group">
+                            <span id="step-size-display" class="fs-val-display">60</span>
+                            <input type="range" id="step-size-slider" min="30" max="100" value="60" class="fs-slider">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 3: SYNTHS -->
+            <div id="panel-synths" class="fs-panel">
+                <h2 class="fs-header">BASS SYNTHESIZERS</h2>
+                <div class="fs-card full-width">
+                    <div id="synth-list-container" class="fs-list-vertical"></div>
+                    <button id="btn-add-synth" class="btn-fs-action dashed">+ ADD NEW BASS INSTANCE</button>
+                </div>
+            </div>
+
+            <!-- PANEL 4: DRUMS -->
+            <div id="panel-drums" class="fs-panel">
+                <h2 class="fs-header">DRUM KIT CONFIG</h2>
+                <div class="fs-card full-width no-pad">
+                    <!-- Note: The ID 'drum-config-container' is populated by JS with collapsible header.
+                         We will need to keep an eye on how JS renders this, but container is here. -->
+                    <div id="drum-config-container" class="drum-config-fs"></div>
+                </div>
+            </div>
+
+            <!-- PANEL 5: SYSTEM -->
+            <div id="panel-system" class="fs-panel">
+                <h2 class="fs-header">SYSTEM & TOOLS</h2>
+                <div class="fs-grid-3">
+                    <button id="btn-open-export" class="fs-tile text-green">
+                        <span class="tile-icon">💿</span>
+                        <span class="tile-lbl">EXPORT AUDIO</span>
+                    </button>
+                    <button id="btn-toggle-log-menu" class="fs-tile">
+                        <span class="tile-icon">terminal</span>
+                        <span class="tile-lbl">SYSTEM LOGS</span>
+                    </button>
+                    <button id="btn-menu-clear" class="fs-tile text-red-dim">
+                        <span class="tile-icon">X</span>
+                        <span class="tile-lbl">CLEAR PATTERN</span>
+                    </button>
+                    <button id="btn-menu-panic" class="fs-tile bg-red-dim text-white">
+                        <span class="tile-icon">!</span>
+                        <span class="tile-lbl">SYSTEM RESET</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- APP HEADER -->
+    <header class="top-bar">
+        <div class="brand-group" id="app-logo">
+            <div id="activity-led" class="led-status"></div>
+            <span class="brand-name">NEURODARK23</span>
+        </div>
+        <button id="btn-open-menu" class="btn-icon-menu">&#9776;</button>
+    </header>
+
+    <!-- WORKSPACE -->
+    <div class="workspace-area custom-scroll">
+        <div class="main-layout">
+
+            <!-- DASHBOARD -->
+            <div class="dashboard-card">
+                <div class="dash-slot">
+                    <label class="label-mini">BPM</label>
+                    <input type="number" id="bpm-input" value="174" class="input-bpm">
+                </div>
+
+                <!-- TRANSPORT CENTER -->
+                <div id="play-container" class="transport-center">
+                    <svg id="play-clock-svg" class="clock-ring" viewBox="0 0 100 100"></svg>
+                    <button id="btn-play" class="btn-transport-play">&#9658;</button>
+                </div>
+
+                <div class="dash-slot">
+                    <label class="label-mini">BLOCK</label>
+                    <div class="block-counter">
+                        <span id="display-current-block" class="text-green">1</span> <span class="text-dim">/</span>
+                        <span id="display-total-blocks">1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHAIN & TRACKS -->
+            <div class="chain-section">
+                <div class="chain-header">
+                    <span class="label-mini">CHAIN</span>
+                    <div class="chain-tools">
+                        <button id="btn-mem-copy" class="btn-tool btn-cyan" title="Copy">CPY</button>
+                        <button id="btn-mem-paste" class="btn-tool btn-cyan" title="Paste">PST</button>
+                        <div class="sep-v"></div>
+                        <button id="btn-move-left" class="btn-tool" title="Left">&larr;</button>
+                        <button id="btn-move-right" class="btn-tool" title="Right">&rarr;</button>
+                        <div class="sep-v"></div>
+                        <button id="btn-add-block" class="btn-tool text-green">+</button>
+                        <button id="btn-del-block" class="btn-tool text-red">&times;</button>
+                    </div>
+                </div>
+                <div id="track-bar" class="track-timeline custom-scroll"></div>
+            </div>
+
+            <!-- INSTRUMENT TABS -->
+            <div id="instrument-tabs-container" class="tabs-bar"></div>
+
+            <!-- STEP MATRIX -->
+            <div id="matrix-container" class="step-grid"></div>
+
+            <div class="spacer-bottom"></div>
+        </div>
+    </div>
+
+    <!-- EDITOR PANEL (DRAWER) -->
+    <div id="editor-panel" class="editor-drawer expanded">
+
+        <div class="drawer-header" id="panel-header-trigger">
+            <span id="step-info-display" class="drawer-title">EDIT MODE</span>
+
+            <!-- DRAWER ACTIONS -->
+            <div class="drawer-actions" onclick="event.stopPropagation()">
+
+                <!-- BASS SPECIFIC TOOLS (Grouped for visibility toggling) -->
+                <div id="bass-tools-group" class="tools-group">
+                    <button id="btn-waveform" class="btn-pill">
+                        <span class="wave-symbol">~</span> SAW
+                    </button>
+                    <div class="sep-v-dark"></div>
+                </div>
+
+                <!-- GLOBAL VIEW TOOLS -->
+                <div class="view-toggles">
+                    <button id="btn-toggle-view-keys" class="btn-pill active">KEYS</button>
+                    <button id="btn-toggle-view-fx" class="btn-pill active">FX</button>
+                </div>
+
+                <div class="sep-v-dark"></div>
+                <button id="btn-minimize-panel" class="btn-minimize">&#9660;</button>
+            </div>
+        </div>
+
+        <div class="drawer-body">
+
+            <!-- BASS EDITOR -->
+            <div id="editor-bass" class="editor-content-bass custom-scroll">
+
+                <!-- FX RACK -->
+                <div id="subpanel-fx" class="control-group">
+                    <div id="fx-container-bar" class="fx-rack">
+
+                        <!-- Analog Controls -->
+                        <div id="fx-controls-analog" class="rack-grid">
+                            <div class="rack-module span-2">
+                                <label class="mod-label text-green">VOL</label>
+                                <input type="range" id="vol-slider" min="0" max="100" value="85" class="fader">
+                            </div>
+                            <div class="rack-module"><label class="mod-label">CUT</label><input type="range"
+                                    id="cutoff-slider" min="100" max="5000" value="800" class="fader"></div>
+                            <div class="rack-module"><label class="mod-label">RES</label><input type="range"
+                                    id="res-slider" min="0" max="20" value="4" class="fader"></div>
+                            <div class="rack-module"><label class="mod-label">ENV</label><input type="range"
+                                    id="env-slider" min="0" max="100" value="60" class="fader"></div>
+                            <div class="rack-module"><label class="mod-label">DEC</label><input type="range"
+                                    id="dec-slider" min="0" max="100" value="40" class="fader"></div>
+                            <div class="rack-module"><label class="mod-label">ACC</label><input type="range"
+                                    id="acc-slider" min="0" max="100" value="50" class="fader"></div>
+                            <div class="rack-module"><label class="mod-label">DRV</label><input type="range"
+                                    id="dist-slider" min="0" max="100" value="20" class="fader"></div>
+                            <div class="rack-module"><label class="mod-label">TONE</label><input type="range"
+                                    id="tone-slider" min="0" max="100" value="100" class="fader"></div>
+                            <div class="rack-module"><label class="mod-label">GAIN</label><input type="range"
+                                    id="dgain-slider" min="0" max="100" value="60" class="fader"></div>
+                        </div>
+
+                        <!-- Digital Controls -->
+                        <div id="fx-controls-digital" class="digital-rack hidden">
+                            <div class="digi-module">
+                                <div class="digi-label text-green">VOL</div>
+                                <div class="digi-screen"><input type="number" id="vol-digital" class="digi-val"></div>
+                                <div class="digi-btns"><button class="dfx-btn" data-target="volume"
+                                        data-dir="-1">-</button><button class="dfx-btn" data-target="volume"
+                                        data-dir="1">+</button></div>
+                            </div>
+                            <div class="digi-module">
+                                <div class="digi-label">CUT</div>
+                                <div class="digi-screen"><input type="number" id="cutoff-digital" class="digi-val">
+                                </div>
+                                <div class="digi-btns"><button class="dfx-btn" data-target="cutoff"
+                                        data-dir="-1">-</button><button class="dfx-btn" data-target="cutoff"
+                                        data-dir="1">+</button></div>
+                            </div>
+                            <div class="digi-module">
+                                <div class="digi-label">RES</div>
+                                <div class="digi-screen"><input type="number" id="res-digital" class="digi-val"></div>
+                                <div class="digi-btns"><button class="dfx-btn" data-target="resonance"
+                                        data-dir="-1">-</button><button class="dfx-btn" data-target="resonance"
+                                        data-dir="1">+</button></div>
+                            </div>
+                            <div class="digi-module">
+                                <div class="digi-label">ENV</div>
+                                <div class="digi-screen"><input type="number" id="env-digital" class="digi-val"></div>
+                                <div class="digi-btns"><button class="dfx-btn" data-target="envMod"
+                                        data-dir="-1">-</button><button class="dfx-btn" data-target="envMod"
+                                        data-dir="1">+</button></div>
+                            </div>
+                            <div class="digi-module">
+                                <div class="digi-label">DEC</div>
+                                <div class="digi-screen"><input type="number" id="dec-digital" class="digi-val"></div>
+                                <div class="digi-btns"><button class="dfx-btn" data-target="decay"
+                                        data-dir="-1">-</button><button class="dfx-btn" data-target="decay"
+                                        data-dir="1">+</button></div>
+                            </div>
+                            <div class="digi-module">
+                                <div class="digi-label">ACC</div>
+                                <div class="digi-screen"><input type="number" id="acc-digital" class="digi-val"></div>
+                                <div class="digi-btns"><button class="dfx-btn" data-target="accentInt"
+                                        data-dir="-1">-</button><button class="dfx-btn" data-target="accentInt"
+                                        data-dir="1">+</button></div>
+                            </div>
+                            <div class="digi-module">
+                                <div class="digi-label">DRV</div>
+                                <div class="digi-screen"><input type="number" id="dist-digital" class="digi-val"></div>
+                                <div class="digi-btns"><button class="dfx-btn" data-target="distortion"
+                                        data-dir="-1">-</button><button class="dfx-btn" data-target="distortion"
+                                        data-dir="1">+</button></div>
+                            </div>
+                            <div class="digi-module">
+                                <div class="digi-label">TONE</div>
+                                <div class="digi-screen"><input type="number" id="tone-digital" class="digi-val"></div>
+                                <div class="digi-btns"><button class="dfx-btn" data-target="distTone"
+                                        data-dir="-1">-</button><button class="dfx-btn" data-target="distTone"
+                                        data-dir="1">+</button></div>
+                            </div>
+                            <div class="digi-module">
+                                <div class="digi-label">GAIN</div>
+                                <div class="digi-screen"><input type="number" id="dgain-digital" class="digi-val"></div>
+                                <div class="digi-btns"><button class="dfx-btn" data-target="distGain"
+                                        data-dir="-1">-</button><button class="dfx-btn" data-target="distGain"
+                                        data-dir="1">+</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KEYBOARD & MODS -->
+                <div id="subpanel-keys" class="control-group">
+                    <div class="keyboard-bar">
+                        <div class="octave-widget">
+                            <button id="oct-down" class="btn-oct">-</button>
+                            <span id="oct-display" class="oct-val text-green">3</span>
+                            <button id="oct-up" class="btn-oct">+</button>
+                        </div>
+
+                        <div class="note-mods">
+                            <button id="btn-toggle-slide" class="btn-mod">~ SLIDE</button>
+                            <button id="btn-toggle-accent" class="btn-mod">^ ACCENT</button>
+                        </div>
+
+                    </div>
+
+                    <div id="piano-container" class="piano-bed">
+                        <div class="keys-white">
+                            <button class="key-w" data-note="C">C</button>
+                            <button class="key-w" data-note="D">D</button>
+                            <button class="key-w" data-note="E">E</button>
+                            <button class="key-w" data-note="F">F</button>
+                            <button class="key-w" data-note="G">G</button>
+                            <button class="key-w" data-note="A">A</button>
+                            <button class="key-w" data-note="B">B</button>
+                        </div>
+                        <button class="key-b pos-1" data-note="C#">C#</button>
+                        <button class="key-b pos-2" data-note="D#">D#</button>
+                        <button class="key-b pos-3" data-note="F#">F#</button>
+                        <button class="key-b pos-4" data-note="G#">G#</button>
+                        <button class="key-b pos-5" data-note="A#">A#</button>
+                    </div>
+
+                    <button id="btn-delete-note" class="btn-delete-note">CLEAR NOTE</button>
+                </div>
+            </div>
+
+            <!-- DRUM EDITOR -->
+            <div id="editor-drum" class="editor-content-drum hidden custom-scroll"></div>
+        </div>
+    </div>
+
+    <script src="Synth/fx_synth.js"></script>
+    <script src="Synth/bass_synth.js"></script>
+    <script src="Synth/drum_synth.js"></script>
+    <script src="Synth/timematrix.js"></script>
+    <script src="Synth/midi_io.js"></script>
+    <script src="Synth/audio_engine.js"></script>
+    <script src="Synth/ui_controller.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
